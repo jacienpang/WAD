@@ -51,7 +51,7 @@ export default class CreateScreen extends React.Component {
 
     this.state = {
       title: '',
-      date: '',
+      date: 0,
       venue: '',
     };
 
@@ -69,9 +69,9 @@ export default class CreateScreen extends React.Component {
            //Check for the Email TextInput
            this.db.transaction((tx) => {
             tx.executeSql('INSERT INTO events(event_title,event_venue,event_date) VALUES(?,?,?)', [
-              this.state.event_title,
-              this.state.event_venue,
-              parseInt((new Date(this.state.event_date).getTime() / 1000).toFixed(0)),
+              this.state.title,
+              this.state.venue,
+              parseInt((new Date(this.state.date).getTime() / 1000).toFixed(0)),
             ]);
           });
       
@@ -114,15 +114,15 @@ export default class CreateScreen extends React.Component {
       <ScrollView style={styles.container}>
         <InputWithLabel style={styles.input}
           label={'Title'}
-          value={this.state.event_title}
-          onChangeText={(event_title) => {this.setState({event_title})}}
+          value={this.state.title}
+          onChangeText={(title) => {this.setState({title})}}
           orientation={'vertical'}
         />
         
         <InputWithLabel style={styles.input}
           label={'Venue'}
-          value={this.state.event_venue}
-          onChangeText={(event_venue) => {this.setState({event_venue})}}
+          value={this.state.venue}
+          onChangeText={(venue) => {this.setState({venue})}}
           orientation={'vertical'}
         />
         
@@ -143,9 +143,9 @@ export default class CreateScreen extends React.Component {
           >
             <View>
               <InputWithLabel
-                label={'Release Date'}
+                label={'Event Date'}
                 style={styles.dateInput}
-                value={this.state.event_date}
+                value={this.state.date}
                 placeholder='Pick a Date'
                 editable={false}
                 underlineColorAndroid={'transparent'}
