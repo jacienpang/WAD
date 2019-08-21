@@ -47,7 +47,7 @@ export default class EditScreen extends React.Component {
 
     this.state = {
       movieId: this.props.navigation.getParam('id'),
-      title: '',
+      event_title: '',
       language: '',
       release_date: '',
       date: new Date(),
@@ -56,7 +56,7 @@ export default class EditScreen extends React.Component {
     this._query = this._query.bind(this);
     this._update = this._update.bind(this);
 
-    this.db = SQLite.openDatabase({name: 'moviesdb', createFromLocation : '~moviesdb.sqlite'}, this.openDb, this.errorDb);
+    this.db = SQLite.openDatabase({name: 'eventsdb', createFromLocation : '~eventsdb.sqlite'}, this.openDb, this.errorDb);
   }
 
   componentDidMount() {
@@ -65,12 +65,12 @@ export default class EditScreen extends React.Component {
 
   _query() {
     this.db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM movies WHERE id = ?', [this.state.movieId], (tx, results) => {
+      tx.executeSql('SELECT * FROM events WHERE id = ?', [this.state.eventId], (tx, results) => {
         if(results.rows.length) {
           this.setState({
-            title: results.rows.item(0).title,
-            language: common.getKey(common.languages, results.rows.item(0).language),
-            release_date: new Date(results.rows.item(0).release_date * 1000).formatted(),
+            title: results.rows.item(0).event_title,
+            venue: results.rows.item(0).event_venue,
+            date: new Date(results.rows.item(0).event_date * 1000).formatted(),
           })
         }
       })
@@ -80,16 +80,16 @@ export default class EditScreen extends React.Component {
   _update() {
     if (this.state.title != '') {
         //Check for the Name TextInput
-        if (this.state.language != '') {
-          if(this.state.release_date != ''){
+        if (this.state.venue != '') {
+          if(this.state.date != ''){
              //Check for the Email TextInput
             
              this.db.transaction((tx) => {
-                tx.executeSql('UPDATE movies SET title=?,language=?,release_date=? WHERE id=?', [
+                tx.executeSql('UPDATE events SET event_title=?,event_venue=?,event_date=? WHERE id=?', [
                   this.state.title,
-                  common.getValue(common.languages, this.state.language),
-                  parseInt((new Date(this.state.release_date).getTime() / 1000).toFixed(0)),
-                  this.state.movieId,
+                  this.state.venue,
+                  parseInt((new Date(this.state.date).getTime() / 1000).toFixed(0)),
+                  this.state.eventId,
                 ]);
               });
           
@@ -97,10 +97,10 @@ export default class EditScreen extends React.Component {
               this.props.navigation.getParam('homeRefresh')();
               this.props.navigation.goBack();
             } else {
-          alert('Please pick a release date');
+          alert('Please pick a date');
         }
       } else {
-        alert('Please pick a language');
+        alert('Please pick a venue');
       }
     }else {
         alert('Please enter the title')
@@ -121,8 +121,7 @@ export default class EditScreen extends React.Component {
         let selectedDate = new Date(year, month, day);
 
         this.setState({
-          date: selectedDate,
-          release_date: selectedDate.formatted(),
+          date: selectedDate.formatted(),
         });
       }
     } catch ({code, message}) {
@@ -140,38 +139,34 @@ export default class EditScreen extends React.Component {
   }
 
   render() {
-    let movie = this.state.movies;
+    let event = this.state.events;
 
     return (
       <ScrollView style={styles.container}>
         <InputWithLabel style={styles.input}
-          label={'Title'}
+          label={'Event Title'}
           value={this.state.title}
-          onChangeText={(title) => {this.setState({title})}}
+          onChangeText={(event_title) => {this.setState({event_title})}}
           orientation={'vertical'}
         />
 
-        <PickerWithLabel style={styles.picker}
-          label={'Language'}
-          items={common.languages}
-          mode={'dialog'}
-          value={this.state.language}
-          onValueChange={(itemValue, itemIndex) => {
-            this.setState({language: itemValue})
-          }}
+        <InputWithLabel style={styles.input}
+          label={'Event Venue'}
+          value={this.state.venue}
+          onChangeText={(event_venue) => {this.setState({event_venue})}}
           orientation={'vertical'}
-          textStyle={{fontSize: 50}}
         />
+
         <TouchableWithoutFeedback
           onPress={() => this.openDatePicker()}
           >
             <View>
               <InputWithLabel
-                label={'Release Date'}
+                label={'Event Date'}
                 style={styles.dateInput}
-                value={this.state.release_date}
-                onDateChange={date => {
-                    this.setState({ date: date });}}
+                value={this.state.date}
+                onDateChange={event_date => {
+                    this.setState({ event_date: event_date });}}
                 editable={false}
                 underlineColorAndroid={'transparent'}
               />

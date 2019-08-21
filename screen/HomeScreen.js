@@ -27,21 +27,21 @@ let SQLite = require('react-native-sqlite-storage');
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Movie List',
+    title: 'Event List',
   };
 
   constructor(props) {
     super(props)
 
     this.state = {
-      movies: [],
+      events: [],
     };
 
     this._query = this._query.bind(this);
 
     this.db = SQLite.openDatabase({
-      name: 'moviesdb',
-      createFromLocation : '~moviesdb.sqlite'
+      name: 'eventsdb',
+      createFromLocation : '~eventsdb.sqlite'
     }, this.openDb, this.errorDb);
   }
 
@@ -51,9 +51,9 @@ export default class HomeScreen extends React.Component {
 
   _query() {
     this.db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM movies ORDER BY release_date desc', [], (tx, results) => {
+      tx.executeSql('SELECT * FROM events ORDER BY event_date desc', [], (tx, results) => {
         this.setState({
-          movies: results.rows.raw(),
+          events: results.rows.raw(),
         })
       })
     });
@@ -71,7 +71,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={ this.state.movies }
+          data={ this.state.events }
           extraData={this.state}
           showsVerticalScrollIndicator={ true }
           renderItem={({item}) =>
@@ -80,14 +80,14 @@ export default class HomeScreen extends React.Component {
               onPress={ () => {
                 this.props.navigation.navigate('View', {
                   id: item.id,
-                  headerTitle: item.title,
+                  headerTitle: item.event_title,
                   refresh: this._query,
                 })
               }}
             >
               <View style={styles.item}>
-                <Text style={styles.itemTitle}>{ item.title }</Text>
-                <Text style={styles.itemSubtitle}>{ item.language }</Text>
+                <Text style={styles.itemTitle}>{ item.event_title }</Text>
+                <Text style={styles.itemSubtitle}>{ item.event_venue }</Text>
               </View>
             </TouchableHighlight>
           }
