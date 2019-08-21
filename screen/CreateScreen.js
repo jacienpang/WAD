@@ -43,7 +43,7 @@ let SQLite = require('react-native-sqlite-storage');
 
 export default class CreateScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Movie',
+    title: 'Add Event',
   };
 
   constructor(props) {
@@ -51,14 +51,13 @@ export default class CreateScreen extends React.Component {
 
     this.state = {
       title: '',
-      language: '01',
-      release_date: '',
+      date: '',
       
     };
 
     this._insert = this._insert.bind(this);
 
-    this.db = SQLite.openDatabase({name: 'moviesdb', createFromLocation : '~moviesdb.sqlite'}, this.openDb, this.errorDb);
+    this.db = SQLite.openDatabase({name: 'eventsdb', createFromLocation : '~eventsdb.sqlite'}, this.openDb, this.errorDb);
   }
 
   
@@ -66,15 +65,13 @@ export default class CreateScreen extends React.Component {
   _insert() {
     if (this.state.title != '') {
       //Check for the Name TextInput
-      if (this.state.language != '') {
-        if(this.state.release_date != ''){
+        if(this.state.date != ''){
            //Check for the Email TextInput
-      
            this.db.transaction((tx) => {
-            tx.executeSql('INSERT INTO movies(title,language,release_date) VALUES(?,?,?)', [
-              this.state.title,
-              common.getValue(common.languages, this.state.language),
-              parseInt((new Date(this.state.date).getTime() / 1000).toFixed(0)),
+            tx.executeSql('INSERT INTO events(title,venue,date) VALUES(?,?,?)', [
+              this.state.event_title,
+              this.state.event_venue,
+              parseInt((new Date(this.state.event_date).getTime() / 1000).toFixed(0)),
             ]);
           });
       
@@ -82,12 +79,9 @@ export default class CreateScreen extends React.Component {
           this.props.navigation.goBack();
             
           } else {
-        alert('Please pick a release date');
+        alert('Please pick a date');
       }
-    } else {
-      alert('Please pick a language');
-    }
-  }else {
+    }else {
       alert('Please enter the title')
     }
     
@@ -107,7 +101,7 @@ export default class CreateScreen extends React.Component {
 
         this.setState({
           date: selectedDate,
-          release_date: selectedDate.formatted(),
+          event_date: selectedDate.formatted(),
         });
       }
     } catch ({code, message}) {
@@ -120,11 +114,12 @@ export default class CreateScreen extends React.Component {
       <ScrollView style={styles.container}>
         <InputWithLabel style={styles.input}
           label={'Title'}
-          value={this.state.title}
-          onChangeText={(title) => {this.setState({title})}}
+          value={this.state.event_title}
+          onChangeText={(event_title) => {this.setState({event_title})}}
           orientation={'vertical'}
         />
-         <PickerWithLabel style={styles.picker}
+        
+         {/* <PickerWithLabel style={styles.picker}
           label={'Language'}
           items={common.languages}
           mode={'dialog'}
@@ -134,7 +129,7 @@ export default class CreateScreen extends React.Component {
           }}
           orientation={'vertical'}
           textStyle={{fontSize: 50}}
-        />
+        /> */}
 
         <TouchableWithoutFeedback
           onPress={() => this.openDatePicker()}
@@ -143,7 +138,7 @@ export default class CreateScreen extends React.Component {
               <InputWithLabel
                 label={'Release Date'}
                 style={styles.dateInput}
-                value={this.state.release_date}
+                value={this.state.event_date}
                 placeholder='Pick a Date'
                 editable={false}
                 underlineColorAndroid={'transparent'}

@@ -80,14 +80,14 @@ export default class HomeScreen extends React.Component {
               onPress={ () => {
                 this.props.navigation.navigate('View', {
                   id: item.id,
-                  headerTitle: item.title,
+                  headerTitle: item.event_title,
                   refresh: this._query,
                 })
               }}
             >
               <View style={styles.item}>
-                <Text style={styles.itemTitle}>{ item.title }</Text>
-                <Text style={styles.itemSubtitle}>{ item.venue }</Text>
+                <Text style={styles.itemTitle}>{ item.event_title }</Text>
+                <Text style={styles.itemSubtitle}>{ item.event_venue }</Text>
               </View>
             </TouchableHighlight>
           }
