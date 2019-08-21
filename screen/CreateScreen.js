@@ -52,7 +52,7 @@ export default class CreateScreen extends React.Component {
     this.state = {
       title: '',
       date: '',
-      
+      venue: '',
     };
 
     this._insert = this._insert.bind(this);
@@ -116,6 +116,13 @@ export default class CreateScreen extends React.Component {
           label={'Title'}
           value={this.state.event_title}
           onChangeText={(event_title) => {this.setState({event_title})}}
+          orientation={'vertical'}
+        />
+        
+        <InputWithLabel style={styles.input}
+          label={'Venue'}
+          value={this.state.event_venue}
+          onChangeText={(event_venue) => {this.setState({event_venue})}}
           orientation={'vertical'}
         />
         
