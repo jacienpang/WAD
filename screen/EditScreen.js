@@ -46,10 +46,10 @@ export default class EditScreen extends React.Component {
     super(props)
 
     this.state = {
-      eventId: this.props.navigation.getParam('id'),
-      title: '',
-      venue: '',
-      date: '',
+      movieId: this.props.navigation.getParam('id'),
+      event_title: '',
+      language: '',
+      release_date: '',
       date: new Date(),
     };
 
