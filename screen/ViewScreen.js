@@ -54,7 +54,7 @@ let SQLite = require('react-native-sqlite-storage');
 export default class ViewScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
-      title: 'Movie Details'
+      title: 'Event Details'
     };
   };
 
@@ -62,13 +62,13 @@ export default class ViewScreen extends React.Component {
     super(props)
 
     this.state = {
-      movieId: this.props.navigation.getParam('id'),
-      movies: null,
+      eventId: this.props.navigation.getParam('id'),
+      events: null,
     };
 
     this._query = this._query.bind(this);
 
-    this.db = SQLite.openDatabase({name: 'moviesdb', createFromLocation : '~moviesdb.sqlite'}, this.openDb, this.errorDb);
+    this.db = SQLite.openDatabase({name: 'eventsdb', createFromLocation : '~eventsdb.sqlite'}, this.openDb, this.errorDb);
   }
 
   componentDidMount() {
@@ -77,10 +77,10 @@ export default class ViewScreen extends React.Component {
 
   _query() {
     this.db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM movies WHERE id = ?', [this.state.movieId], (tx, results) => {
+      tx.executeSql('SELECT * FROM events WHERE id = ?', [this.state.eventId], (tx, results) => {
         if(results.rows.length) {
           this.setState({
-            movies: results.rows.item(0),
+            events: results.rows.item(0),
           })
         }
       })
@@ -88,7 +88,7 @@ export default class ViewScreen extends React.Component {
   }
 
   _delete() {
-    Alert.alert('Confirm Deletion', 'Delete `'+ this.state.movies.title +'`?', [
+    Alert.alert('Confirm Deletion', 'Delete `'+ this.state.events.title +'`?', [
      {
       text: 'No',
          onPress: () => {},
@@ -97,7 +97,7 @@ export default class ViewScreen extends React.Component {
          text: 'Yes',
          onPress: () => {
            this.db.transaction((tx) => {
-             tx.executeSql('DELETE FROM movies WHERE id = ?', [this.state.movieId])
+             tx.executeSql('DELETE FROM events WHERE id = ?', [this.state.movieId])
            });
 
            this.props.navigation.getParam('refresh')();
@@ -116,26 +116,26 @@ export default class ViewScreen extends React.Component {
   }
 
   render() {
-    let movie = this.state.movies;
+    let event = this.state.events;
 
     return (
       <View style={styles.container}>
         <ScrollView>
           <InputWithLabel style={styles.output}
             label={'Title'}
-            value={movie ? movie.title : ''}
+            value={event ? event.event_title : ''}
             orientation={'vertical'}
             editable={false}
           />
           <InputWithLabel style={styles.output}
-            label={'Language'}
-            value={movie ? movie.language : ''}
+            label={'Event Venue'}
+            value={event ? event.event_venue : ''}
             orientation={'vertical'}
             editable={false}
           />
           <InputWithLabel style={styles.output}
-            label={'Release Date'}
-            value={movie ? new Date(movie.release_date * 1000).formatted(): ''}
+            label={'Event Date'}
+            value={event ? new Date(event.event_date * 1000).formatted(): ''}
             orientation={'vertical'}
             editable={false}
           />
@@ -152,10 +152,10 @@ export default class ViewScreen extends React.Component {
               switch(name) {
                 case 'edit':
                   this.props.navigation.navigate('Edit', {
-                    id: movie ? movie.id : 0,
-                    headerTitle: movie ? movie.title : '',
-                    language: movie ? movie.language: '',
-                    release_date: movie ? movie.release_date: '',
+                    id: event ? event.id : 0,
+                    headerTitle: event ? event.event_title : '',
+                    venue: event ? event.event_venue: '',
+                    date: event ? event.event_date: '',
                     refresh: this._query,
                     homeRefresh: this.props.navigation.getParam('refresh'),
                   });
