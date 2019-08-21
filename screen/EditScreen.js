@@ -46,24 +46,10 @@ export default class EditScreen extends React.Component {
     super(props)
 
     this.state = {
-<<<<<<< HEAD
-      movieId: this.props.navigation.getParam('id'),
       event_title: '',
       language: '',
       release_date: '',
-=======
-      eventId: this.props.navigation.getParam('id'),
-      title: '',
-      venue: '',
-      date: '',
->>>>>>> changes
       date: new Date(),
-    };
-
-    this._query = this._query.bind(this);
-    this._update = this._update.bind(this);
-
-    this.db = SQLite.openDatabase({name: 'eventsdb', createFromLocation : '~eventsdb.sqlite'}, this.openDb, this.errorDb);
   }
 
   componentDidMount() {
