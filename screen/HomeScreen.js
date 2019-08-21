@@ -51,7 +51,7 @@ export default class HomeScreen extends React.Component {
 
   _query() {
     this.db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM events ORDER BY date desc', [], (tx, results) => {
+      tx.executeSql('SELECT * FROM events ORDER BY event_date desc', [], (tx, results) => {
         this.setState({
           events: results.rows.raw(),
         })

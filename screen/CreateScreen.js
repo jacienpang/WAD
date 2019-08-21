@@ -68,7 +68,7 @@ export default class CreateScreen extends React.Component {
         if(this.state.date != ''){
            //Check for the Email TextInput
            this.db.transaction((tx) => {
-            tx.executeSql('INSERT INTO events(title,venue,date) VALUES(?,?,?)', [
+            tx.executeSql('INSERT INTO events(event_title,event_venue,event_date) VALUES(?,?,?)', [
               this.state.event_title,
               this.state.event_venue,
               parseInt((new Date(this.state.event_date).getTime() / 1000).toFixed(0)),
