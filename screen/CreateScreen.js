@@ -51,7 +51,7 @@ export default class CreateScreen extends React.Component {
 
     this.state = {
       title: '',
-      date: '',
+      date: 0,
       venue: '',
     };
 
